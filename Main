@@ -1,1 +1,159 @@
-Hi
+class Item:
+    def __init__(self, name, price, category):
+        if price <= 0:
+            error_msg =" Invalid value for price, got {}"
+            raise ValueError(error_msg.format(price))
+        else:
+            self._name = name
+            self._price = price
+            self._category = category
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def price(self):
+        return self.price
+
+    @property
+    def category(self):
+        return self._category
+
+    def __str__(self):
+        return "{}@{}-{}".format(self._name, self._price, self._category)
+
+class Query:
+    def __init__(self, field, operation, value):
+        self.op_list = [
+            "IN", "EQ", "GT", "GTE",
+            "LT", "LTE", "STARTS_WITH", "ENDS_WITH", "CONTAINS"]
+        if operation not in self.op_list:
+            error_msg = "Invalid value for operation, got {}"
+            raise ValueError(error_msg.format(operation))
+        else:
+            self._field = field
+            self._operation = operation
+            self._value = value
+
+    @property
+    def field(self):
+        return self._field
+
+    @property
+    def operation(self):
+        return self._operation
+
+    @property
+    def value(self):
+        return self._value
+
+    def __str__(self):
+        return "{} {} {}".format(self._field,self._operation,self._value)
+
+
+class Store:
+    def __init__(self):
+       self.item_list = []
+
+    def add_item(self,item):
+        self.item_list.append(item)
+
+    def __str__(self):
+        string = ''
+        no_of_items = 1
+        total_items = len(self.item_list)
+        for item in self.item_list:
+            if no_of_items != total_items:
+                string = string+"{}@{}-{}\n".format(item.name,item.price,item.category)
+            else:
+                string = string+"{}@{}-{}".format(item.name,item.price,item.category)
+            no_of_items += 1
+                
+        if string:
+            print(string)
+        else:
+            print("No items")
+
+    def count(self):
+        return len(self.item_list)
+
+    def filter(self,query):
+        temp = Store()
+        if query.operation =='EQ':
+            for item in self.item_list:
+                if query.field =='name' and query.value == item.name:
+                    temp.item_list.append(item)
+                elif query.field =='price' and query.value == item.price:
+                    temp.item_list.append(item)
+                elif query.field =='category' and query.value == item.category:
+                    temp.item_list.append(item)
+        if query.operation =='GT':
+            for item in self.item_list:
+                if query.field =='name' and item.name > query.value:
+                    temp.item_list.append(item)
+                elif query.field =='price' and item.price > query.value:
+                    temp.item_list.append(item)
+                elif query.field =='category' and item.category > query.value:
+                    temp.item_list.append(item)
+        if query.operation =='GTE':
+            for item in self.item_list:
+                if query.field =='name' and item.name >= query.value:
+                    temp.item_list.append(item)
+                elif query.field =='price' and item.price >= query.value:
+                    temp.item_list.append(item)
+                elif query.field =='category' and item.category >= query.value:
+                    temp.item_list.append(item)
+        if query.operation =='LT':
+            for item in self.item_list:
+                if query.field =='name' and item.name < query.value:
+                    temp.item_list.append(item)
+                elif query.field =='price' and item.price < query.value:
+                    temp.item_list.append(item)
+                elif query.field =='category' and item.category < query.value:
+                    temp.item_list.append(item)
+        
+        if query.operation =='LTE':
+            for item in self.item_list:
+                if query.field =='name' and item.name <= query.value:
+                    temp.item_list.append(item)
+                elif query.field =='price' and item.price <= query.value:
+                    temp.item_list.append(item)
+                elif query.field =='category' and item.category <= query.value:
+                    temp.item_list.append(item)
+        if query.operation =='STARTS_WITH':
+            for item in self.item_list:
+                if query.field =='name' and item.name.startswith(query.value):
+                    temp.item_list.append(item)
+                elif query.field =='price' and item.price.startswith(query.value):
+                    temp.item_list.append(item)
+                elif query.field =='category' and item.category.startswith(query.value):
+                    temp.item_list.append(item)
+        if query.operation =='ENDS_WITH':
+            for item in self.item_list:
+                if query.field =='name' and item.name.endswith(query.value):
+                    temp.item_list.append(item)
+                elif query.field =='price' and item.price.endswith(query.value):
+                    temp.item_list.append(item)
+                elif query.field =='category' and item.category.endswith(query.value):
+                    temp.item_list.append(item)
+        if query.operation =='CONTAINS':
+            for item in self.item_list:
+                if query.field =='name' and (item.name.find(query.value) != -1):
+                    temp.item_list.append(item)
+                elif query.field =='price' and (item.price.find(query.value) != -1):
+                    temp.item_list.append(item)
+                elif query.field =='category' and (item.category.find(query.value) != -1):
+                    temp.item_list.append(item)
+
+    def exclude(self,query):
+        temp1 = Store()
+        temp2 = Store()
+        temp1 = self.filter(query)
+        for item in self.item_list:
+            if(item not in temp1.item_list):
+                temp2.add_item(item)
+        return temp2
+        
+        
+        
